@@ -2,13 +2,13 @@ package org.mini2dx.connect4;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
-public class Tile {
+
+public class Tile  {
 
     private int x, y; //co-oridinates of the tile.
     private TileColour colour;
     private static TileColourSprites sprites;
     private  Sprite tileSprite;
-
 
     public enum TileColour
     {
@@ -43,11 +43,12 @@ public class Tile {
     public void render(Graphics g) {
         g.drawSprite(tileSprite);
 
+
     }
 
     public void initialise() {
+        tileSprite.setPosition(getX(),getY());
 
-       tileSprite.setPosition(getX(),getY());
     }
 
     public void update(float delta) {
@@ -74,6 +75,7 @@ public class Tile {
         this.y = y;
     }
 
+
     public void setColour(TileColour colour) {
         this.colour = colour;
 
@@ -92,5 +94,9 @@ public class Tile {
         }
 
     }
+
+
+
+
 
 }
