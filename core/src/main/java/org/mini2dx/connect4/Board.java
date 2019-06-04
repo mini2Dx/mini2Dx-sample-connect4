@@ -7,11 +7,11 @@ import static org.mini2dx.connect4.Tile.TileColour.*;
 public class Board {
 
     private final int BOARD_SIZE = 6, TILE_SIZE = 100, MINCOL = 0, SELECTION_TILE_Y = 20;
-    public final int BOARD_XSTART = 300, BOARD_YSTART = 200;
+    private final int BOARD_XSTART = 300, BOARD_YSTART = 200, WIN_CONDITION = 4;
 
     private Tile[][] board = new Tile[BOARD_SIZE][BOARD_SIZE];
     private static InputHandler input;
-    private int selectRow = 0, selectCol = 0;
+    private int selectedCol = 0;
     private boolean isBluesTurn = true;
     private Tile rTile, bTile, eTile, selectionTile;
 
@@ -21,7 +21,8 @@ public class Board {
         eTile = new Tile(EMPTY);
         bTile = new Tile(BLUE);
         rTile = new Tile(RED);
-        selectionTile = new Tile(BOARD_XSTART,SELECTION_TILE_Y);
+        selectionTile = new Tile(BOARD_XSTART, SELECTION_TILE_Y);
+        selectionTile.setColour(BLUE);
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 Tile empty = eTile.clone();
@@ -49,10 +50,15 @@ public class Board {
                 tile.setY(board[filledSpace][col].getY());
                 board[filledSpace][col] = tile;
                 board[filledSpace][col].initialise();
+                if (hasGameBeenWon(filledSpace)) {
+                    System.out.println("Game over " + tile.getColour() + " has won!");
+                }
+
                 return;
             }
 
         }
+
 
     }
 
@@ -73,7 +79,6 @@ public class Board {
     public void render(Graphics g) {
 
         g.scale(0.5f, 0.5f);
-
 
 
         for (Tile row[] : board) {
@@ -107,31 +112,211 @@ public class Board {
         }
 
         if (input.isLeftPressed()) {
-            if (selectCol != MINCOL) {
-                selectCol--;
-                selectionTile.setX(selectionTile.getX()-TILE_SIZE);
+            if (selectedCol != MINCOL) {
+                selectedCol--;
+                selectionTile.setX(selectionTile.getX() - TILE_SIZE);
             }
         }
 
         if (input.isRightPressed()) {
-            if (selectCol != BOARD_SIZE - 1) {
-                selectCol++;
-                selectionTile.setX(selectionTile.getX()+TILE_SIZE);
+            if (selectedCol != BOARD_SIZE - 1) {
+                selectedCol++;
+                selectionTile.setX(selectionTile.getX() + TILE_SIZE);
             }
-            }
+
+        }
 
     }
 
     private void flipTile() {
         if (isBluesTurn) {
-                addTileAt(bTile.clone(), selectCol);
-                isBluesTurn = false;
+            addTileAt(bTile.clone(), selectedCol);
+            isBluesTurn = false;
+            selectionTile.setColour(RED);
         } else {
-                addTileAt(rTile.clone(), selectCol);
-                isBluesTurn = true;
+            addTileAt(rTile.clone(), selectedCol);
+            isBluesTurn = true;
+            selectionTile.setColour(BLUE);
         }
     }
 
+    private boolean hasGameBeenWon(int selectedRow) {
 
+        return verticalWin() || horizontalWin(selectedRow) || diagonalWin(selectedRow);
+
+    }
+
+    private boolean verticalWin() {
+        int colourMatchs = 0, colourMismatch = 0;
+        int row = 5;
+        Tile.TileColour colour = board[row][selectedCol].getColour();
+
+        do {
+            if (!(colour.equals(board[row][selectedCol].getColour()))) {
+                colourMismatch++;
+                colourMatchs = 0;
+                if (colourMismatch > (BOARD_SIZE - WIN_CONDITION)) {
+                    return false;
+                }
+            } else {
+                colourMatchs++;
+                if (colourMatchs == WIN_CONDITION) {
+                    return true;
+                }
+            }
+
+            row--;
+        }
+        while (row >= 0);
+
+        return false;
+    }
+
+    private boolean horizontalWin(int selectedRow) {
+        int colourMatches = 0, colourMismatches = 0;
+        Tile.TileColour colour = board[selectedRow][selectedCol].getColour();
+
+        for (int col = 0; col < BOARD_SIZE; col++) {
+            if (!(colour.equals(board[selectedRow][col].getColour()))) {
+                colourMismatches++;
+                colourMatches = 0;
+                if (colourMismatches > (BOARD_SIZE - WIN_CONDITION)) {
+                    return false;
+                }
+            } else {
+                colourMatches++;
+                if (colourMatches == WIN_CONDITION) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean diagonalWin(int selectedRow) {
+
+        if(bottomLeftDiagonal(selectedRow)){
+            return true;
+        }
+        else if(bottomRightDiagonal(selectedRow)){
+            return true;
+        }
+         else if (topLeftDiagonal(selectedRow)){
+             return true;
+        }
+         else if (topRightDiagonal(selectedRow)){
+             return true;
+        }
+        return false;
+    }
+
+    public boolean bottomLeftDiagonal(int selectedRow) {
+        int colourMatches = 0, colourMismatches = 0;
+        Tile.TileColour colour = board[selectedRow][selectedCol].getColour();
+        int stepX = selectedRow;
+        int stepY = selectedCol;
+
+        while (stepX < BOARD_SIZE && stepY < BOARD_SIZE) {
+            if (colour.equals(board[stepX][stepY].getColour())) {
+                colourMatches++;
+                if (colourMatches == WIN_CONDITION) {
+                    return true;
+                }
+            } else {
+                colourMismatches++;
+                colourMatches = 0;
+                if (colourMismatches > (BOARD_SIZE - WIN_CONDITION)) {
+                    return false;
+                }
+
+            }
+            stepX++;
+            stepY++;
+        }
+        return false;
+    }
+
+    public boolean bottomRightDiagonal(int selectedRow) {
+        int colourMatches = 0, colourMismatches = 0;
+        Tile.TileColour colour = board[selectedRow][selectedCol].getColour();
+        int stepX = selectedRow;
+        int stepY = selectedCol;
+
+        while (stepX < BOARD_SIZE && stepY >= MINCOL) {
+            if (colour.equals(board[stepX][stepY].getColour())) {
+                colourMatches++;
+                if (colourMatches == WIN_CONDITION) {
+                    return true;
+                }
+            } else {
+                colourMismatches++;
+                colourMatches = 0;
+                if (colourMismatches > (BOARD_SIZE - WIN_CONDITION)) {
+                    return false;
+                }
+
+            }
+            stepX++;
+            stepY--;
+        }
+
+        return false;
+    }
+
+    public boolean topLeftDiagonal(int selectedRow) {
+        int colourMatches = 0, colourMismatches = 0;
+        Tile.TileColour colour = board[selectedRow][selectedCol].getColour();
+        int stepX = selectedRow;
+        int stepY = selectedCol;
+
+        while (stepX >= MINCOL && stepY < BOARD_SIZE) {
+            if (colour.equals(board[stepX][stepY].getColour())) {
+                colourMatches++;
+                if (colourMatches == WIN_CONDITION) {
+                    return true;
+                }
+            } else {
+                colourMismatches++;
+                colourMatches = 0;
+                if (colourMismatches > (BOARD_SIZE - WIN_CONDITION)) {
+                    return false;
+                }
+
+            }
+            stepX--;
+            stepY++;
+        }
+
+        return false;
+    }
+
+
+    public boolean topRightDiagonal(int selectedRow) {
+        int colourMatches = 0, colourMismatches = 0;
+        Tile.TileColour colour = board[selectedRow][selectedCol].getColour();
+        int stepX = selectedRow;
+        int stepY = selectedCol;
+
+        while (stepX >= MINCOL && stepY >= MINCOL) {
+            if (colour.equals(board[stepX][stepY].getColour())) {
+                colourMatches++;
+                if (colourMatches == WIN_CONDITION) {
+                    return true;
+                }
+            } else {
+                colourMismatches++;
+                colourMatches = 0;
+                if (colourMismatches > (BOARD_SIZE - WIN_CONDITION)) {
+                    return false;
+                }
+
+            }
+            stepX--;
+            stepY--;
+        }
+
+
+        return false;
+    }
 
 }
