@@ -6,14 +6,14 @@ import static org.mini2dx.connect4.Tile.TileColour.*;
 
 public class Board {
 
-    private final int BOARD_SIZE = 6, TILE_SIZE = 100, MINCOL = 0, MINROW = 0;
+    private final int BOARD_SIZE = 6, TILE_SIZE = 100, MINCOL = 0, SELECTION_TILE_Y = 20;
     public final int BOARD_XSTART = 300, BOARD_YSTART = 200;
 
     private Tile[][] board = new Tile[BOARD_SIZE][BOARD_SIZE];
     private static InputHandler input;
     private int selectRow = 0, selectCol = 0;
     private boolean isBluesTurn = true;
-    private Tile rTile, bTile, eTile;
+    private Tile rTile, bTile, eTile, selectionTile;
 
     public Board() {
 
@@ -21,6 +21,7 @@ public class Board {
         eTile = new Tile(EMPTY);
         bTile = new Tile(BLUE);
         rTile = new Tile(RED);
+        selectionTile = new Tile(BOARD_XSTART,SELECTION_TILE_Y);
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 Tile empty = eTile.clone();
@@ -64,18 +65,24 @@ public class Board {
             }
         }
 
+        selectionTile.update(delta);
+
     }
 
 
     public void render(Graphics g) {
 
         g.scale(0.5f, 0.5f);
+
+
+
         for (Tile row[] : board) {
             for (Tile tile : row) {
                 tile.render(g);
             }
         }
 
+        selectionTile.render(g);
 
     }
 
@@ -89,6 +96,8 @@ public class Board {
             }
         }
 
+        selectionTile.initialise();
+
     }
 
     private void checkInput() {
@@ -98,31 +107,31 @@ public class Board {
         }
 
         if (input.isLeftPressed()) {
-            if (selectCol != MINCOL)
+            if (selectCol != MINCOL) {
                 selectCol--;
+                selectionTile.setX(selectionTile.getX()-TILE_SIZE);
+            }
         }
 
         if (input.isRightPressed()) {
-            if (selectCol != BOARD_SIZE - 1)
+            if (selectCol != BOARD_SIZE - 1) {
                 selectCol++;
-        }
+                selectionTile.setX(selectionTile.getX()+TILE_SIZE);
+            }
+            }
 
     }
 
     private void flipTile() {
-
-        if (board[selectRow][selectCol].getColour().equals(EMPTY)) {
-            if (isBluesTurn) {
+        if (isBluesTurn) {
                 addTileAt(bTile.clone(), selectCol);
                 isBluesTurn = false;
-            } else {
+        } else {
                 addTileAt(rTile.clone(), selectCol);
                 isBluesTurn = true;
-            }
         }
-
-
     }
+
 
 
 }
