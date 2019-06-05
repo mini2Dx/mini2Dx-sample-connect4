@@ -42,8 +42,6 @@ public class Tile  {
 
     public void render(Graphics g) {
         g.drawSprite(tileSprite);
-
-
     }
 
     public void initialise() {

@@ -7,7 +7,7 @@ import static org.mini2dx.connect4.Tile.TileColour.*;
 public class Board {
 
     private final int BOARD_SIZE = 6, TILE_SIZE = 100, MINCOL = 0, SELECTION_TILE_Y = 20;
-    private final int BOARD_XSTART = 300, BOARD_YSTART = 200, WIN_CONDITION = 4;
+    private final int BOARD_XSTART = 400, BOARD_YSTART = 200, WIN_CONDITION = 4;
 
     private Tile[][] board = new Tile[BOARD_SIZE][BOARD_SIZE];
     private static InputHandler input;
@@ -77,10 +77,6 @@ public class Board {
 
 
     public void render(Graphics g) {
-
-        g.scale(0.5f, 0.5f);
-
-
         for (Tile row[] : board) {
             for (Tile tile : row) {
                 tile.render(g);
