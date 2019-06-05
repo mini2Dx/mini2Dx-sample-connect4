@@ -16,33 +16,32 @@
  ******************************************************************************/
 package org.mini2dx.connect4;
 
-import com.badlogic.gdx.graphics.Texture;
-import org.mini2Dx.core.graphics.Sprite;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 
-public class TileColourSprites {
+public class TileAudio {
 
-    private static final String EMPTY_TILE = "tileGrey_27.png";
-    private static final String RED_TILE = "tileRed_27.png";
-    private static final String BLUE_TILE = "tileBlue_27.png";
-    private Sprite blueSprite, redSprite, emptySprite;
+    Sound tile_fall, game_won;
 
-     TileColourSprites() {
-        redSprite = new Sprite(new Texture(RED_TILE));
-        blueSprite = new Sprite(new Texture(BLUE_TILE));
-        emptySprite = new Sprite(new Texture(EMPTY_TILE));
+    enum SoundId {
+        TILE_FALL,
+        GAME_WON
     }
 
-    Sprite getBlueSprite() {
-        return blueSprite;
+    public TileAudio() {
+        tile_fall = Gdx.audio.newSound(Gdx.files.internal("coin1.ogg"));
+        game_won = Gdx.audio.newSound(Gdx.files.internal("jingles_SAX10.ogg"));
     }
 
-    Sprite getRedSprite() {
-        return redSprite;
+    public void play(SoundId sound) {
+        switch (sound) {
+            case TILE_FALL:
+                tile_fall.play();
+                break;
+            case GAME_WON:
+                game_won.play();
+                break;
+        }
     }
-
-    Sprite getEmptySprite() {
-        return emptySprite;
-    }
-
 
 }

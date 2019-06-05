@@ -1,3 +1,19 @@
+/*
+/*******************************************************************************
+ * Copyright 2019 Viridian Software Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.mini2dx.connect4;
 import org.mini2Dx.core.graphics.Graphics;
 
@@ -14,6 +30,7 @@ public class Board {
     private boolean isBluesTurn = true, endOfGame = false;
     private Tile rTile, bTile, eTile, selectionTile;
     private String previousColour;
+    private TileAudio audio;
 
     public Board() {
 
@@ -23,6 +40,7 @@ public class Board {
         rTile = new Tile(RED);
         selectionTile = new Tile(BOARD_XSTART, SELECTION_TILE_Y);
         selectionTile.setColour(BLUE);
+        audio = new TileAudio();
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 Tile empty = eTile.clone();
@@ -51,7 +69,7 @@ public class Board {
                 board[filledSpace][col] = tile;
                 board[filledSpace][col].initialise();
                 if (hasGameBeenWon(filledSpace)) {
-                    System.out.println("Game over " + tile.getColour() + " has won!");
+                    audio.play(TileAudio.SoundId.GAME_WON);
                 }
 
                 return;
@@ -119,6 +137,7 @@ public class Board {
     private void checkInput() {
         if(!endOfGame) {
             if (input.isEnterPressed()) {
+                audio.play(TileAudio.SoundId.TILE_FALL);
                 flipTile();
             }
 
