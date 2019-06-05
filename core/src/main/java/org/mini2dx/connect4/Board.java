@@ -1,5 +1,4 @@
 package org.mini2dx.connect4;
-
 import org.mini2Dx.core.graphics.Graphics;
 
 import static org.mini2dx.connect4.Tile.TileColour.*;
@@ -12,8 +11,9 @@ public class Board {
     private Tile[][] board = new Tile[BOARD_SIZE][BOARD_SIZE];
     private static InputHandler input;
     private int selectedCol = 0;
-    private boolean isBluesTurn = true;
+    private boolean isBluesTurn = true, endOfGame = false;
     private Tile rTile, bTile, eTile, selectionTile;
+    private String previousColour;
 
     public Board() {
 
@@ -73,6 +73,14 @@ public class Board {
 
         selectionTile.update(delta);
 
+        if(selectionTile.getColour().equals(RED))
+        {
+            previousColour = "BLUE";
+        }
+        else{
+            previousColour = "RED";
+        }
+
     }
 
 
@@ -84,6 +92,13 @@ public class Board {
         }
 
         selectionTile.render(g);
+
+        if(endOfGame)
+        {
+            g.scale(3,3);
+            g.drawString("Game over "+ previousColour + " has won",BOARD_XSTART/3,TILE_SIZE/3);
+        }
+
 
     }
 
@@ -102,24 +117,25 @@ public class Board {
     }
 
     private void checkInput() {
-
-        if (input.isEnterPressed()) {
-            flipTile();
-        }
-
-        if (input.isLeftPressed()) {
-            if (selectedCol != MINCOL) {
-                selectedCol--;
-                selectionTile.setX(selectionTile.getX() - TILE_SIZE);
-            }
-        }
-
-        if (input.isRightPressed()) {
-            if (selectedCol != BOARD_SIZE - 1) {
-                selectedCol++;
-                selectionTile.setX(selectionTile.getX() + TILE_SIZE);
+        if(!endOfGame) {
+            if (input.isEnterPressed()) {
+                flipTile();
             }
 
+            if (input.isLeftPressed()) {
+                if (selectedCol != MINCOL) {
+                    selectedCol--;
+                    selectionTile.setX(selectionTile.getX() - TILE_SIZE);
+                }
+            }
+
+            if (input.isRightPressed()) {
+                if (selectedCol != BOARD_SIZE - 1) {
+                    selectedCol++;
+                    selectionTile.setX(selectionTile.getX() + TILE_SIZE);
+                }
+
+            }
         }
 
     }
@@ -138,8 +154,15 @@ public class Board {
 
     private boolean hasGameBeenWon(int selectedRow) {
 
-        return verticalWin() || horizontalWin(selectedRow) || diagonalWin(selectedRow);
+        if (verticalWin()){
+            endOfGame = true;
+        } else if (horizontalWin(selectedRow)){
+            endOfGame = true;
+        } else if (diagonalWin(selectedRow)){
+            endOfGame = true;
+        }
 
+        return endOfGame;
     }
 
     private boolean verticalWin() {

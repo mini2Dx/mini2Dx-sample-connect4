@@ -12,7 +12,6 @@ public class Connect4Game extends BasicGame {
 	
 	@Override
     public void initialise() {
-
         viewport = new FitViewport(WORLD_WIDTH,WORLDHEIGHT);
 
         board = new Board();
@@ -34,5 +33,7 @@ public class Connect4Game extends BasicGame {
     public void render(Graphics g) {
         viewport.apply(g);
         board.render(g);
+
     }
+
 }
