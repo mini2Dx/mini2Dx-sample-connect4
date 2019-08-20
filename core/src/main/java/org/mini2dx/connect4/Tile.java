@@ -15,7 +15,7 @@
  * limitations under the License.
  ******************************************************************************/
 package org.mini2dx.connect4;
-import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
 

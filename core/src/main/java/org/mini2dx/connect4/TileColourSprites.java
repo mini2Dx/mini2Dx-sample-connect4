@@ -16,8 +16,9 @@
  ******************************************************************************/
 package org.mini2dx.connect4;
 
-import com.badlogic.gdx.graphics.Texture;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.graphics.Sprite;
+import org.mini2Dx.core.graphics.Texture;
 
 public class TileColourSprites {
 
@@ -27,9 +28,9 @@ public class TileColourSprites {
     private Sprite blueSprite, redSprite, emptySprite;
 
      TileColourSprites() {
-        redSprite = new Sprite(new Texture(RED_TILE));
-        blueSprite = new Sprite(new Texture(BLUE_TILE));
-        emptySprite = new Sprite(new Texture(EMPTY_TILE));
+        redSprite = Mdx.graphics.newSprite(Mdx.graphics.newTexture(Mdx.files.internal(RED_TILE)));
+        blueSprite = Mdx.graphics.newSprite(Mdx.graphics.newTexture(Mdx.files.internal(BLUE_TILE)));
+        emptySprite = Mdx.graphics.newSprite(Mdx.graphics.newTexture(Mdx.files.internal(EMPTY_TILE)));
     }
 
     Sprite getBlueSprite() {
