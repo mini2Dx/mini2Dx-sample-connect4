@@ -16,8 +16,10 @@
  ******************************************************************************/
 package org.mini2dx.connect4;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.audio.Sound;
+
+import java.io.IOException;
 
 public class TileAudio {
 
@@ -29,8 +31,12 @@ public class TileAudio {
     }
 
     public TileAudio() {
-        tile_fall = Gdx.audio.newSound(Gdx.files.internal("coin1.ogg"));
-        game_won = Gdx.audio.newSound(Gdx.files.internal("jingles_SAX10.ogg"));
+        try {
+            tile_fall = Mdx.audio.newSound(Mdx.files.internal("coin1.ogg"));
+            game_won = Mdx.audio.newSound(Mdx.files.internal("jingles_SAX10.ogg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void play(SoundId sound) {

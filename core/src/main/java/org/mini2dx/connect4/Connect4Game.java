@@ -17,8 +17,8 @@
 
 
 package org.mini2dx.connect4;
+import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.game.BasicGame;
-import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.viewport.FitViewport;
 
 
@@ -42,10 +42,6 @@ public class Connect4Game extends BasicGame {
 
 	    board.update(delta);
     }
-
-    @Override
-    public void interpolate(float alpha) {
-	}
     
     @Override
     public void render(Graphics g) {
